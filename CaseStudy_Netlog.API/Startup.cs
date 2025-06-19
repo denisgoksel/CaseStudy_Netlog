@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CaseStudy_Netlog.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace CaseStudy_Netlog.API
 {
@@ -28,6 +30,9 @@ namespace CaseStudy_Netlog.API
         {
 
             services.AddControllers();
+            services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("CaseStudy_Netlog.Data")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CaseStudy_Netlog.API", Version = "v1" });
@@ -37,6 +42,7 @@ namespace CaseStudy_Netlog.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,6 +60,7 @@ namespace CaseStudy_Netlog.API
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
