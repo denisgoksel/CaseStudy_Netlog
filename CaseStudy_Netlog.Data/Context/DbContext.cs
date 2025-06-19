@@ -1,4 +1,4 @@
-﻿using CaseStudy_Netlog.Core.Entities;
+﻿using CaseStudy_Netlog.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaseStudy_Netlog.Data.Context

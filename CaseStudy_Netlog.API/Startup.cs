@@ -13,6 +13,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaseStudy_Netlog.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using CaseStudy_Netlog.Core.Interfaces;
+
+using CaseStudy_Netlog.API.Services;
+using CaseStudy_Netlog.API.BackgroundServices;
 
 namespace CaseStudy_Netlog.API
 {
@@ -28,11 +32,14 @@ namespace CaseStudy_Netlog.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddHttpClient(); // HttpClient için
+            services.AddScoped<IOrderImportService, OrderImportService>();
+            services.AddHostedService<HourlyIntegrationService>();
             services.AddControllers();
+            services.AddHostedService<SoapOrderPollingService>();
             services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("CaseStudy_Netlog.Data")));
+                                 b => b.MigrationsAssembly("CaseStudy_Netlog.Data")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CaseStudy_Netlog.API", Version = "v1" });
