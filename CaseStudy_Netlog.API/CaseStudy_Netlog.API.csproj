@@ -8,4 +8,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CaseStudy_Netlog.Core\CaseStudy_Netlog.Core.csproj" />
+    <ProjectReference Include="..\CaseStudy_Netlog.Data\CaseStudy_Netlog.Data.csproj" />
+  </ItemGroup>
+
 </Project>
