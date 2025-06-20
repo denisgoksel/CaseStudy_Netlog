@@ -20,7 +20,7 @@ namespace CaseStudy_Netlog.API.Controllers
         {
             var success = await _orderService.UpdateOrderStatusAsync(id, 1);
             if (!success)
-                return BadRequest("Sipariş teslim edilemedi. Belki zaten teslim edilmiştir.");
+                return BadRequest("Sipariş teslim edilemedi.Zaten teslim edilmiştir.");
 
             return Ok("Sipariş teslim edildi olarak güncellendi.");
         }
