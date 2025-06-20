@@ -1,20 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CaseStudy_Netlog.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using CaseStudy_Netlog.Core.Interfaces;
-
 using CaseStudy_Netlog.API.Services;
 using CaseStudy_Netlog.API.BackgroundServices;
 
@@ -29,32 +21,43 @@ namespace CaseStudy_Netlog.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient(); // HttpClient için
+            // HttpClient tek sefer eklenir
+            services.AddHttpClient();
+
             services.AddScoped<IOrderImportService, OrderImportService>();
-            services.AddHostedService<HourlyIntegrationService>();
-            services.AddControllers();
-            services.AddHostedService<SoapOrderPollingService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
+
+            // Sadece aþaðýdaki iki servis aktif olmalý:
+            services.AddHostedService<DailyIntegrationService>();   // Günlük sipariþ çekme + teslimat gönderme
+            services.AddHostedService<HourlyIntegrationService>();  // Saatlik teslimat durumu güncelleme
+
+
+            // DbContext konfigürasyonu
             services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                                 b => b.MigrationsAssembly("CaseStudy_Netlog.Data")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                                     b => b.MigrationsAssembly("CaseStudy_Netlog.Data")));
+
+            // MVC Controller'lar
+            services.AddControllers();
+
+            // Swagger ayarlarý
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CaseStudy_Netlog.API", Version = "v1" });
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CaseStudy_Netlog.API v1"));
+                app.UseSwaggerUI(c =>
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CaseStudy_Netlog.API v1"));
             }
 
             app.UseHttpsRedirection();
@@ -67,7 +70,6 @@ namespace CaseStudy_Netlog.API
             {
                 endpoints.MapControllers();
             });
-
         }
     }
 }

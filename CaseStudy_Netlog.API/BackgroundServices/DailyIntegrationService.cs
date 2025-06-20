@@ -6,14 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using CaseStudy_Netlog.Core.Interfaces;
 
-namespace CaseStudy_Netlog.API.Services
+namespace CaseStudy_Netlog.API.BackgroundServices
 {
-    public class HourlyIntegrationService : BackgroundService
+    public class DailyIntegrationService : BackgroundService
     {
-        private readonly ILogger<HourlyIntegrationService> _logger;
+        private readonly ILogger<DailyIntegrationService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public HourlyIntegrationService(ILogger<HourlyIntegrationService> logger, IServiceProvider serviceProvider)
+        public DailyIntegrationService(ILogger<DailyIntegrationService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
@@ -21,13 +21,13 @@ namespace CaseStudy_Netlog.API.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("HourlyIntegrationService started.");
+            _logger.LogInformation("DailyIntegrationService started.");
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    _logger.LogInformation("HourlyIntegrationService running at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("DailyIntegrationService running at: {time}", DateTimeOffset.Now);
 
                     using (var scope = _serviceProvider.CreateScope())
                     {
@@ -37,18 +37,20 @@ namespace CaseStudy_Netlog.API.Services
 
                         var orders = await orderImportService.GetOrdersFromSoapAsync(previousDay);
                         await orderImportService.SaveOrdersAsync(orders);
+
+                        // Teslim edilen siparişleri REST API'ye gönder
                         await orderImportService.SendDeliveredOrdersToRestApiAsync();
                     }
 
-                    _logger.LogInformation("HourlyIntegrationService completed cycle at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("DailyIntegrationService completed cycle at: {time}", DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred in HourlyIntegrationService.");
+                    _logger.LogError(ex, "Error occurred in DailyIntegrationService.");
                 }
 
-                // 1 saat bekleme (test amaçlı süreyi 1 dakika yapabilirsiniz)
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                // Günde 1 kere çalışacak şekilde 24 saat bekle
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }
