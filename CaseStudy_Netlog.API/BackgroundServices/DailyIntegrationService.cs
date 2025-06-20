@@ -49,7 +49,8 @@ namespace CaseStudy_Netlog.API.BackgroundServices
                     _logger.LogError(ex, "Error occurred in DailyIntegrationService.");
                 }
 
-                // Günde 1 kere çalışacak şekilde 24 saat bekle
+                // TEST: FromMinutes(5) 5 dakika olarak belirlendi.
+                // Günde 1 kere çalışacak şekilde 24 saat beklemesi için FromDays(1) olacak.
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
         }
