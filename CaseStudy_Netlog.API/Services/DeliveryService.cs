@@ -20,16 +20,17 @@ namespace CaseStudy_Netlog.API.Services
 
         public DeliveryService(AppDbContext context, IHttpClientFactory httpClientFactory, ILogger<DeliveryService> logger)
         {
-            _context = context;
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task ProcessDeliveredOrdersAsync()
         {
+            // Status == 1 olan, teslim edildi olarak işaretlenen siparişleri getiriyoruz
             var orders = await _context.Orders
-                .Include(o => o.Delivery)               // Teslimat bilgisi için
-                .Where(o => o.Status == 1)              // Sadece Teslim Edildi statüsü
+                .Include(o => o.Delivery)
+                .Where(o => o.Status == 1)
                 .ToListAsync();
 
             var httpClient = _httpClientFactory.CreateClient();
@@ -55,12 +56,15 @@ namespace CaseStudy_Netlog.API.Services
 
                 try
                 {
-                    var response = await httpClient.PutAsync("https://bcompany.com/api/deliveries", content);
+                    // B firması API'sine teslimat bilgisi gönderiliyor (localhost örnek)
+                    var response = await httpClient.PutAsync("https://localhost:5001/api/delivery/update-deliveries", content);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        order.Status = 2;  // 2 = Tamamlandı
-                        _logger.LogInformation($"Order {order.Id} başarıyla B firmasına gönderildi.");
+                        // Başarılıysa durum 2 = Tamamlandı olarak güncelleniyor
+                        order.Status = 2;
+                        _context.Entry(order).State = EntityState.Modified;
+                        _logger.LogInformation($"Order {order.Id} başarıyla güncellendi ve B firmasına gönderildi.");
                     }
                     else
                     {

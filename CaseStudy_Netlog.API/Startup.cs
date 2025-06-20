@@ -28,7 +28,7 @@ namespace CaseStudy_Netlog.API
 
             services.AddScoped<IOrderImportService, OrderImportService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
-
+            services.AddScoped<IOrderService, OrderService>();
             // Sadece aþaðýdaki iki servis aktif olmalý:
             services.AddHostedService<DailyIntegrationService>();   // Günlük sipariþ çekme + teslimat gönderme
             services.AddHostedService<HourlyIntegrationService>();  // Saatlik teslimat durumu güncelleme

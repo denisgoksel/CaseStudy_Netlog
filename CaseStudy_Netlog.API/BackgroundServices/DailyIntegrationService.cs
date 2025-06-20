@@ -50,7 +50,7 @@ namespace CaseStudy_Netlog.API.BackgroundServices
                 }
 
                 // Günde 1 kere çalışacak şekilde 24 saat bekle
-                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
         }
     }

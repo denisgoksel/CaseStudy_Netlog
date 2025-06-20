@@ -20,9 +20,10 @@ namespace CaseStudy_Netlog.API.Controllers
         }
 
         [HttpPut("update-deliveries")]
-        public async Task<IActionResult> UpdateDeliveries()
+        //public async Task<IActionResult> UpdateDeliveries()
+        public  IActionResult UpdateDeliveries()
         {
-            await _deliveryService.ProcessDeliveredOrdersAsync();
+            //await _deliveryService.ProcessDeliveredOrdersAsync();
             return Ok("Teslimat durumu güncellendi ve REST API’ye gönderildi.");
         }
     }
