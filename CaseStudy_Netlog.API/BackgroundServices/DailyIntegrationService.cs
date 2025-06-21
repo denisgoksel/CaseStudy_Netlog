@@ -21,13 +21,13 @@ namespace CaseStudy_Netlog.API.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("DailyIntegrationService started.");
+            
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    _logger.LogInformation("DailyIntegrationService running at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("DailyIntegrationService saat: {time}" + " başladı.", DateTimeOffset.Now);
 
                     using (var scope = _serviceProvider.CreateScope())
                     {
@@ -42,11 +42,11 @@ namespace CaseStudy_Netlog.API.BackgroundServices
                         await orderImportService.SendDeliveredOrdersToRestApiAsync();
                     }
 
-                    _logger.LogInformation("DailyIntegrationService completed cycle at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("DailyIntegrationService saat: {time}" + " tamamlandı.", DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred in DailyIntegrationService.");
+                    _logger.LogError(ex, "Hata :DailyIntegrationService.");
                 }
 
                 // TEST: FromMinutes(5) 5 dakika olarak belirlendi.

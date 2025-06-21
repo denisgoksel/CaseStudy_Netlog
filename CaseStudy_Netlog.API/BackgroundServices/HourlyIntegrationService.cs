@@ -19,7 +19,7 @@ public class HourlyIntegrationService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("HourlyIntegrationService started.");
+        _logger.LogInformation("HourlyIntegrationService başladı.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -31,11 +31,11 @@ public class HourlyIntegrationService : BackgroundService
                     await deliveryService.ProcessDeliveredOrdersAsync();
                 }
 
-                _logger.LogInformation("HourlyIntegrationService cycle completed.");
+                _logger.LogInformation("HourlyIntegrationService cycle tamamlandı.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in HourlyIntegrationService.");
+                _logger.LogError(ex, "Hata: HourlyIntegrationService.");
             }
             //Test olarak FromMinutes(1) yapıldı. FromHours(1) Olması gerekiyor.
             await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
