@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using CaseStudy_Netlog.Core.Interfaces;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace CaseStudy_Netlog.API.Controllers
 {
@@ -14,16 +15,17 @@ namespace CaseStudy_Netlog.API.Controllers
     public class DeliveryController : ControllerBase
     {
         private readonly IDeliveryService _deliveryService;
-
-        public DeliveryController(IDeliveryService deliveryService)
+        private readonly ILogger<DeliveryController> _logger;
+        public DeliveryController(IDeliveryService deliveryService, ILogger<DeliveryController> logger)
         {
             _deliveryService = deliveryService;
+            _logger = logger;
         }
 
         [HttpPut("update-deliveries")]
         public IActionResult UpdateDeliveries([FromBody] DeliveryDto delivery)
         {
-            Console.WriteLine($"Teslimat Alındı - OrderId: {delivery.OrderId}, Plaka: {delivery.PlateNumber}");
+            _logger.LogInformation($"Teslimat Alındı - OrderId: {delivery.OrderId}, Plaka: {delivery.PlateNumber}");
             return Ok("Teslimat alındı");
         }
 
