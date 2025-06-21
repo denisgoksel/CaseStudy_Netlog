@@ -31,7 +31,7 @@ public class HourlyIntegrationService : BackgroundService
                     await deliveryService.ProcessDeliveredOrdersAsync();
                 }
 
-                _logger.LogInformation("HourlyIntegrationService cycle tamamlandı.");
+                _logger.LogInformation("HourlyIntegrationService tamamlandı.");
             }
             catch (Exception ex)
             {
