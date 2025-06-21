@@ -24,6 +24,7 @@ namespace CaseStudy_Netlog.API.Controllers
         public  IActionResult UpdateDeliveries()
         {
             //await _deliveryService.ProcessDeliveredOrdersAsync();deneme olduğu için kapattım.
+            //sadece örnek Ok gönderdim normalde burda B firmasının modeline yönelik işlemler var.
             return Ok("Teslimat durumu güncellendi ve REST API’ye gönderildi.");
         }
     }

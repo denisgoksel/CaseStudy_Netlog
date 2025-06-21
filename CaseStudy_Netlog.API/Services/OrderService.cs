@@ -1,8 +1,5 @@
 ﻿using CaseStudy_Netlog.Core.Interfaces;
 using CaseStudy_Netlog.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CaseStudy_Netlog.API.Services

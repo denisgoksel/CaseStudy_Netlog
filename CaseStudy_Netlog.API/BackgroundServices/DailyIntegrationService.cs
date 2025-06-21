@@ -51,7 +51,7 @@ namespace CaseStudy_Netlog.API.BackgroundServices
 
                 // TEST: FromMinutes(5) 5 dakika olarak belirlendi.
                 // Günde 1 kere çalışacak şekilde 24 saat beklemesi için FromDays(1) olacak.
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }
