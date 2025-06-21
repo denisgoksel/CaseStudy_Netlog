@@ -23,7 +23,7 @@ namespace CaseStudy_Netlog.API.Controllers
         //public async Task<IActionResult> UpdateDeliveries()
         public  IActionResult UpdateDeliveries()
         {
-            //await _deliveryService.ProcessDeliveredOrdersAsync();
+            //await _deliveryService.ProcessDeliveredOrdersAsync();deneme olduğu için kapattım.
             return Ok("Teslimat durumu güncellendi ve REST API’ye gönderildi.");
         }
     }
