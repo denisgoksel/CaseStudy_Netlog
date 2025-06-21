@@ -5,6 +5,7 @@ using CaseStudy_Netlog.Data.Entities;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CaseStudy_Netlog.Core.Interfaces;
+using System;
 
 namespace CaseStudy_Netlog.API.Controllers
 {
@@ -20,13 +21,12 @@ namespace CaseStudy_Netlog.API.Controllers
         }
 
         [HttpPut("update-deliveries")]
-        //public async Task<IActionResult> UpdateDeliveries()
-        public  IActionResult UpdateDeliveries()
+        public IActionResult UpdateDeliveries([FromBody] DeliveryDto delivery)
         {
-            //await _deliveryService.ProcessDeliveredOrdersAsync();deneme olduğu için kapattım.
-            //sadece örnek Ok gönderdim normalde burda B firmasının modeline yönelik işlemler var.
-            return Ok("Teslimat durumu güncellendi ve REST API’ye gönderildi.");
+            Console.WriteLine($"Teslimat Alındı - OrderId: {delivery.OrderId}, Plaka: {delivery.PlateNumber}");
+            return Ok("Teslimat alındı");
         }
+
     }
 
 }
