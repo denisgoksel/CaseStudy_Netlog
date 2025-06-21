@@ -5,6 +5,7 @@ using CaseStudy_Netlog.Core.Interfaces;
 using CaseStudy_Netlog.Data.Entities;
 using CaseStudy_Netlog.Data.Context;
 using System;
+using System.Linq;
 
 namespace CaseStudy_Netlog.API.Controllers
 {
@@ -21,6 +22,32 @@ namespace CaseStudy_Netlog.API.Controllers
             _orderService = orderService;
             _dbContext = dbContext;
         }
+        // GET: api/orders
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _dbContext.Orders
+                .Include(o => o.OrderItems)
+                .ToListAsync();
+
+            var orderDtos = orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                OrderDate = order.OrderDate,
+                DeliveryPoint = order.DeliveryPoint,
+                ReceiverName = order.ReceiverName,
+                ContactPhone = order.ContactPhone,
+                Status = order.Status,
+                Items = order.OrderItems.Select(item => new OrderItemDto
+                {
+                    ProductName = item.ProductName,
+                    Quantity = item.Quantity
+                }).ToList()
+            }).ToList();
+
+            return Ok(orderDtos);
+        }
+
 
         // PUT: api/orders/5/mark-delivered
         [HttpPut("{id}/mark-delivered")]

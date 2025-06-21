@@ -4,6 +4,7 @@ using CaseStudy_Netlog.Data.Context;
 using CaseStudy_Netlog.Data.Entities;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CaseStudy_Netlog.API.Controllers
 {
@@ -20,72 +21,31 @@ namespace CaseStudy_Netlog.API.Controllers
 
         // GET: api/orderitems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrderItems()
+        public async Task<ActionResult<IEnumerable<OrderItemDto>>> GetOrderItems()
         {
-            var items = await _context.OrderItems
-                .Include(oi => oi.Order)
-                .ToListAsync();
+            var items = await _context.OrderItems.ToListAsync();
 
-            return Ok(items);
+            var dtos = items.Select(i => new OrderItemDto
+            {
+                ProductName = i.ProductName,
+                Quantity = i.Quantity
+            }).ToList();
+
+            return Ok(dtos);
         }
+
 
         // GET: api/orderitems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderItem>> GetOrderItem(int id)
         {
             var item = await _context.OrderItems
-                .Include(oi => oi.Order)
                 .FirstOrDefaultAsync(oi => oi.Id == id);
 
             if (item == null)
                 return NotFound();
 
             return Ok(item);
-        }
-
-        // POST: api/orderitems
-        [HttpPost]
-        public async Task<ActionResult<OrderItem>> PostOrderItem([FromBody] OrderItem item)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            _context.OrderItems.Add(item);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetOrderItem), new { id = item.Id }, item);
-        }
-
-        // PUT: api/orderitems/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderItem(int id, [FromBody] OrderItem updated)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var item = await _context.OrderItems.FindAsync(id);
-            if (item == null)
-                return NotFound();
-
-            item.ProductName = updated.ProductName;
-            item.Quantity = updated.Quantity;
-            item.OrderId = updated.OrderId;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        // DELETE: api/orderitems/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrderItem(int id)
-        {
-            var item = await _context.OrderItems.FindAsync(id);
-            if (item == null)
-                return NotFound();
-
-            _context.OrderItems.Remove(item);
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
     }
 }
